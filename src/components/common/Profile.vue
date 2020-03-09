@@ -1,18 +1,20 @@
 <template>
   <div class="content">
-      <!--返回-->
+    <!--返回-->
     <a class="pro-link">
-      <el-button @click.prevent="$router.go(-1)"><返回个人信息> </返回个人信息></el-button>
+      <el-button @click.prevent="$router.go(-1)">
+        返回个人信息
+      </el-button>
     </a>
-      <!--基本信息-->
+    <!--基本信息-->
     <el-card class="bg-17a2b8">
       <el-row>
         <el-col :span="24">
           <img
-            v-if="profile.user"
+            :src="profile.user.avatar"
             alt="头像"
             class="pro-img"
-            :src="profile.user.avatar"
+            v-if="profile.user"
           />
         </el-col>
         <el-col :span="24">
@@ -31,16 +33,16 @@
       </el-row>
     </el-card>
     <!--个人能力-->
-    <el-card class="profile-personal">
+    <el-card class="profile-personal mt-30">
       <h3 class="t-c col-17a2b8">个人介绍</h3>
       <p>专注于在线教育</p>
       <hr />
       <h3 class="t-c col-17a2b8">个人技能</h3>
       <ul class="clear pro-list">
-        <li class="fl" v-for="(skill, index) of profile.skills" :key="index">
+        <li :key="index" class="fl" v-for="(skill, index) of profile.skills">
           <icon-svg
-            icon-class="dui"
             class-name="icon-content icon-aligin"
+            icon-class="dui"
           ></icon-svg>
           {{ skill }}
         </li>
@@ -52,9 +54,9 @@
         <el-col :span="13">
           <h1 class="pro-title">个人经历</h1>
           <el-card
-            class="pro-card"
-            v-for="(exp, index) of profile.experience"
             :key="index"
+            class="pro-card mt-30"
+            v-for="(exp, index) of profile.experience"
           >
             <ul class="profile-group-item">
               <li>
@@ -67,12 +69,12 @@
             </ul>
           </el-card>
         </el-col>
-        <el-col :span="10" :offset="1">
+        <el-col :offset="1" :span="10">
           <h1 class="pro-title">教育经历</h1>
           <el-card
-            class="pro-card"
-            v-for="(edu, index) of profile.education"
             :key="index"
+            class="pro-card mt-30"
+            v-for="(edu, index) of profile.education"
           >
             <ul class="profile-group-item">
               <li>
@@ -86,23 +88,21 @@
         </el-col>
       </el-row>
     </el-card>
-      <!--仓库信息-->
+    <!--仓库信息-->
     <el-card class="mt-30">
       <h2>Github仓库信息</h2>
-      <ul class="pro-git-group">
-        <li class="pro-git-item"
-            v-if="profile && profile.githubusername"
-            v-for="(github,index )of profile.githubusername"
-            :key="index"
-
-        >
+      <ul class="pro-git-group" v-if="profile && profile.githubusername">
+        <li class="pro-git-item" v-for="repo of repos" :key="repo.id">
           <el-col :span="3">
-            <router-link class="col-17a2b8" to="/"
-              >flutter-jd-playlist</router-link
-            >
+            <router-link class="col-17a2b8" :to="repo.html_url">
+              {{ repo.name }}
+            </router-link>
+            <p>{{ repo.description }}</p>
           </el-col>
-          <el-col :span="8" :offset="8">
-            <el-tag type="success">标签二</el-tag>
+          <el-col :offset="8" :span="8">
+            <el-tag type="success">Starts:{{ repo.stargazers_count }}</el-tag>
+            <el-tag type="info">Watchers:{{ repo.watchers_count }}</el-tag>
+            <el-tag type="warning">Forks:{{ repo.forks_count }}</el-tag>
           </el-col>
         </li>
       </ul>
@@ -119,11 +119,11 @@ export default {
   data() {
     return {
       profile: {},
-      clientId:'',
-      client_secret:'',
-      count:0,
-      sort:'created desc',
-      repos:[],
+      clientId: "8f060ca407b882d0768e",
+      client_secret: "49d360e829e80b226f82e9aa93916c0be4a35039",
+      count: 0,
+      sort: "created desc",
+      repos: []
     };
   },
   beforeRouteEnter(to, from, next) {
@@ -134,7 +134,7 @@ export default {
       vm.getProfileData(handle);
     });
   },
-  async created(){
+  async created() {
     await this.HandlegitHub();
   },
   methods: {
@@ -146,14 +146,40 @@ export default {
         this.profile = [];
       }
     },
-    async HandlegitHub(){
-      await this.$axios.all()
+    HandlegitHub() {
+      /*
+          * github 创建地址
+          * https://github.com/settings/applications/new
+          * github 请求地址
+          * Client ID
+              8f060ca407b882d0768e
+              Client Secret
+              49d360e829e80b226f82e9aa93916c0be4a35039
+          *
+          *
+          *
+          *
+          * */
+      const url = `https://api.github.com/users/${this.username}/repos?per_page=${this.count}&sort=${this.sort}&client_id=${this.cliendId}&client_secret=${this.client_secret}`;
+
+      fetch(url, {
+        method: "GET",
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*"
+      })
+        .then(res => res.json())
+        .then(data => {
+          this.repos = data;
+        })
+        .catch(error => {
+          console.log(error);
+        });
     }
   }
 };
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .content {
   width: 1170px;
   margin: 0 auto 30px;
@@ -193,32 +219,40 @@ export default {
   background-color: #f8f9fa;
   font-size: 20px;
 }
+
 .pro-list {
   padding-left: 0;
 }
+
 .pro-title {
   font-weight: bold;
   color: #17a2b8;
   text-align: center;
 }
+
 .profile-group-item {
   p {
     font-size: 15px;
   }
+
   span {
     font-weight: bold;
   }
 }
+
 .pro-card {
   border: 1px solid #ccc;
 }
-/deep/.pro-card-group {
+
+/deep/ .pro-card-group {
   box-shadow: 0 0 0 0 #fff !important;
   border: none;
+
   .el-card__body {
     padding: 0;
   }
 }
+
 .pro-git-item {
   width: 100%;
   line-height: 50px;
@@ -227,7 +261,8 @@ export default {
   padding: 0 20px;
   border-radius: 4px;
 }
-/deep/.icon-aligin {
+
+/deep/ .icon-aligin {
   vertical-align: text-top;
   margin-right: 10px;
 }

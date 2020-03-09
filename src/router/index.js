@@ -11,6 +11,7 @@ import AddExperience from "../components/common/AddExperience";
 import Education from "../components/common/Education";
 import Profiles from "../components/common/Profiles";
 import Profile from "../components/common/Profile";
+import Feed from "../views/feed/Feed";
 Vue.use(VueRouter);
 
 const routes = [
@@ -68,6 +69,11 @@ const routes = [
         path: "/profile/:handle",
         name: "Profile",
         component: Profile
+      },
+      {
+        path: "/feed",
+        name: "Feed",
+        component: Feed
       }
     ]
   }

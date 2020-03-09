@@ -30,11 +30,11 @@
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button
+            @click="handleDelete(scope.$index, scope.row)"
             size="mini"
             type="danger"
-            @click="handleDelete(scope.$index, scope.row)"
-            >删除 ></el-button
-          >
+            >删除 >
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -45,9 +45,15 @@
 export default {
   name: "AddEduction",
   data() {
-    return {
-      tableData: []
-    };
+    return {};
+  },
+  props: {
+    education: Array
+  },
+  computed: {
+    tableData() {
+      return this.education;
+    }
   },
   methods: {
     handleDelete(row) {
@@ -58,4 +64,9 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped lang="scss">
+.create-form {
+  width: 720px;
+  margin: 30px auto;
+}
+</style>

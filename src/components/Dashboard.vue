@@ -11,10 +11,10 @@
         @deleteExperience="handleDeleteExp"
       />
       <!--展示教育经历-->
-      <education
+      <AddEduction
         :education="profile.education"
         @deleteEducation="handleDeleteEdu"
-      ></education>
+      ></AddEduction>
       <!--删除账户按钮-->
       <div>
         <el-button class="btn btn-danger" @click="deleteClick"
@@ -34,10 +34,10 @@
 <script>
 import ProfileActived from "./common/ProfileActived";
 import Experience from "./common/Experience";
-import Education from "./common/Education";
+import AddEduction from "./common/AddEduction";
 export default {
   name: "Dashboard",
-  components: { Education, Experience, ProfileActived },
+  components: { AddEduction, Experience, ProfileActived },
   data() {
     return {
       profile: null

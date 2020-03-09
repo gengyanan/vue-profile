@@ -146,7 +146,7 @@ export default {
             const res = await this.$axios.post(url, this.createForm);
 
             if (res) {
-              this.profile=res.data;
+              this.profile = res.data;
               this.$store.dispatch("setProfile", res.data);
               this.$router.push("/dashboard");
             }
