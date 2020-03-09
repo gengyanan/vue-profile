@@ -6,8 +6,8 @@
         <router-link class="nav-link" to="/profiles">开发者</router-link>
       </el-col>
       <el-col :span="12" class="nav-right">
-        <router-link to="/feed">留言</router-link>
-        <router-link to="/dashboard" v-show="isLogin">Dashboard</router-link>
+        <router-link to="/feed">留言 | </router-link>
+        <router-link to="/dashboard" v-show="isLogin">Dashboard | </router-link>
         <router-link to="/register" v-show="!isLogin">注册</router-link>
         <span class="col-fff">|</span>
         <router-link to="/login" v-show="!isLogin">登录</router-link>
